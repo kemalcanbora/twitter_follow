@@ -2,7 +2,7 @@ from selenium import webdriver
 from getpass import getpass
 import time
 import requests
-from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
 
 def login_twitter(username, password):
     driver = webdriver.Chrome("/usr/bin/chromedriver")
@@ -19,17 +19,18 @@ def login_twitter(username, password):
 
     driver.find_element_by_class_name("EdgeButtom--medium").click()
 
-    url = 'https://twitter.com/evrekaco/followers'
+    url = 'https://twitter.com/workudy/followers'
 
     driver.get(url)
     initial_value = 0
-    end = 300000
+    end = 30
     for i in range(1000, end, 1000):
         driver.execute_script("window.scrollTo(" + str(initial_value) + ', ' + str(i) + ")")
         time.sleep(0.5)
         initial_value = i
 
-
+    el = driver.find_element(By.XPATH, "//div[@class='u-textTruncate u-inlineBlock ProfileNameTruncated-withBadges ProfileNameTruncated-withBadges--1']")
+    print(el.text)
 
     time.sleep(600)
 
