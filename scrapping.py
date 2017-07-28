@@ -35,10 +35,6 @@ def login_twitter(username, password):
     for el in liste:
         print(el.text)
 
-
-    # el = driver.find_element(By.XPATH, "//div[@class='u-textTruncate u-inlineBlock ProfileNameTruncated-withBadges ProfileNameTruncated-withBadges--1']")
-    # print(el.text)
-
     time.sleep(600)
 
 username = "tuulrik"#input("user name : ")
