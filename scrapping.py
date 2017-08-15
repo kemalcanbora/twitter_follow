@@ -60,15 +60,14 @@ def login_twitter(username, password):
     for el in isim_listesi:
         isim_listesi_lst.append(el.text)
     dataframe=pd.DataFrame({"username":username_listesi_lst,"isim_listesi":isim_listesi_lst})
-
+    # driver.close()
     return (dataframe["isim_listesi"][0])
 
-    time.sleep(6)
 
 def search_on_google(param):
-    chop = webdriver.ChromeOptions()
-    chop.add_extension('/usr/local/bin/Proxy-for-Chrome_v1.14.crx')
-    driver = webdriver.Chrome(chrome_options=chop)
+    # chop = webdriver.ChromeOptions()
+    # chop.add_extension('/usr/local/bin/Proxy-for-Chrome_v1.14.crx')
+    # driver = webdriver.Chrome(chrome_options=chop)
 
     driver.get("http://www.google.com")
     input_element = driver.find_element_by_name("q")
@@ -98,8 +97,10 @@ def crunchbase(crunch_link):
 
     driver.get(crunch_link)
     time.sleep(6)
-    username_listesi = driver.find_elements(By.XPATH, "//div[@class='overview-stats']")
+    username_listesi = driver.find_elements(By.XPATH, "//div[@class='details definition-list']")
     time.sleep(6)
+    print(username_listesi)
+
     for el in username_listesi:
         username_listesi.append(el.text)
         print(username_listesi)
@@ -117,4 +118,3 @@ password = "xxx"#getpass("password  : ")
 
 sonuc=login_twitter(username, password)
 x=search_on_google(sonuc)
-crunchbase(x)
