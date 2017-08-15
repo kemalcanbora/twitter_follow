@@ -1,11 +1,25 @@
-from selenium import webdriver
-from getpass import getpass
+import pandas as pd
 import time
-import requests
+import  requests
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
+
+### for proxy ##
+# PROXY = "47.89.185.47"
+# webdriver.DesiredCapabilities.CHROME['proxy']={
+#     "httpProxy":PROXY,
+#     "ftpProxy":PROXY,
+#     "sslProxy":PROXY,
+#     "noProxy":None,
+#     "proxyType":"MANUAL",
+#     "autodetect":False
+# }
+
+driver = webdriver.Chrome("/usr/bin/chromedriver")
 
 def login_twitter(username, password):
-    driver = webdriver.Chrome("/usr/bin/chromedriver")
     driver.get("https://twitter.com/login")
 
     username_field = driver.find_element_by_class_name("js-username-field")
@@ -19,26 +33,70 @@ def login_twitter(username, password):
 
     driver.find_element_by_class_name("EdgeButtom--medium").click()
 
-    url = 'https://twitter.com/kemalcanbora/following'
+    url = 'https://twitter.com/enevo/following'
 
     driver.get(url)
 
     initial_value = 0
 
-
-    end = 30000
+    end = 3000
     for i in range(1000, end, 1000):
         driver.execute_script("window.scrollTo(" + str(initial_value) + ', ' + str(i) + ")")
         time.sleep(0.5)
         initial_value = i
-        liste = driver.find_elements(By.XPATH,"//b[@class='u-linkComplex-target']")
-    for el in liste:
-        print(el.text)
+        username_listesi = driver.find_elements(By.XPATH,"//b[@class='u-linkComplex-target']")
+        isim_listesi = driver.find_elements(By.XPATH, "//a[@class='fullname ProfileNameTruncated-link u-textInheritColor js-nav']")
 
-    time.sleep(600)
+    username_listesi_lst = []
+    isim_listesi_lst = []
+
+    for el in username_listesi[1:]:
+        username_listesi_lst.append(el.text)
+
+    for el in isim_listesi:
+        isim_listesi_lst.append(el.text)
+    dataframe=pd.DataFrame({"username":username_listesi_lst,"isim_listesi":isim_listesi_lst})
+
+    return (dataframe["isim_listesi"][0])
+
+    time.sleep(6)
+
+def search_on_google(param):
+    driver.get("http://www.google.com")
+    input_element = driver.find_element_by_name("q")
+    input_element.send_keys(str(param)+" crunchbase")
+    input_element.submit()
+
+    RESULTS_LOCATOR = "//div/h3/a"
+
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.XPATH, RESULTS_LOCATOR)))
+
+    ## return results###
+    #page1_results = driver.find_elements(By.XPATH, RESULTS_LOCATOR)
+    #for item in page1_results:
+    #     print(item.text)
+
+    time.sleep(3)
+    assert "No results found." not in driver.page_source
+    driver.find_element_by_xpath('.//*[@id="rso"]/div[1]/div/div/div/div/h3/a').click()
+
+    return (driver.current_url)
+
+def crunchbase(crunch_link):
+    driver.get(crunch_link)
+    time.sleep(3)
+    username_listesi = driver.find_elements(By.XPATH, "//div[@class='overview-stats']")
+
+    for el in username_listesi:
+        username_listesi.append(el.text)
+        print(username_listesi)
+
+
 
 username = "tuulrik"#input("user name : ")
-password = "pass"#getpass("password  : ")
-login_twitter(username, password)
+password = "xxx"#getpass("password  : ")
 
-
+sonuc=login_twitter(username, password)
+x=search_on_google(sonuc)
+crunchbase(x)
