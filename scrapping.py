@@ -113,7 +113,7 @@ def chrome_extension_add():
 
 
 username = "tuulrik"#input("user name : ")
-password = "godneverdie0"#getpass("password  : ")
+password = "xxx"#getpass("password  : ")
 
 sonuc=login_twitter(username, password)
 x=search_on_google(sonuc)
