@@ -1,10 +1,12 @@
 import pandas as pd
 import time
-import  requests
+import  os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
 
 ### for proxy ##
 # PROXY = "fr3.vpnme.me"
@@ -17,6 +19,7 @@ from selenium import webdriver
 #     "autodetect":False,
 #     "class": "org.openqa.selenium.Proxy",
 # }
+
 
 driver = webdriver.Chrome("/usr/bin/chromedriver")
 
@@ -63,9 +66,13 @@ def login_twitter(username, password):
     time.sleep(6)
 
 def search_on_google(param):
+    chop = webdriver.ChromeOptions()
+    chop.add_extension('/usr/local/bin/Proxy-for-Chrome_v1.14.crx')
+    driver = webdriver.Chrome(chrome_options=chop)
+
     driver.get("http://www.google.com")
     input_element = driver.find_element_by_name("q")
-    time.sleep(60)
+    time.sleep(6)
     input_element.send_keys(str(param)+" crunchbase")
     input_element.submit()
 
@@ -83,34 +90,30 @@ def search_on_google(param):
     assert "No results found." not in driver.page_source
     driver.find_element_by_xpath('.//*[@id="rso"]/div[1]/div/div/div/div/h3/a').click()
     print(driver.current_url)
+
+
     return (driver.current_url)
 
 def crunchbase(crunch_link):
+
     driver.get(crunch_link)
-    time.sleep(60)
+    time.sleep(6)
     username_listesi = driver.find_elements(By.XPATH, "//div[@class='overview-stats']")
-    time.sleep(60)
+    time.sleep(6)
     for el in username_listesi:
         username_listesi.append(el.text)
         print(username_listesi)
 
-def proxy_crunchbase(param):
-    driver.get("https://www.proxysite.com/tr/")
-    time.sleep(3)
-    input_element = driver.find_element_by_name("d")
-    input_element.send_keys(str(param))
-    input_element.submit()
-    time.sleep(3)
-
-    defin= driver.find_elements(By.XPATH, "//div[@class='details definition-list']")
-
-    for el in defin:
-        print(el.text)
-
+def chrome_extension_add():
+    chop = webdriver.ChromeOptions()
+    chop.add_extension('/usr/local/bin/Proxy-for-Chrome_v1.14.crx')
+    driver = webdriver.Chrome(chrome_options=chop)
+    driver.get("http://www.google.com")
+    time.sleep(6)
 
 
 username = "tuulrik"#input("user name : ")
-password = "XXX"#getpass("password  : ")
+password = "godneverdie0"#getpass("password  : ")
 
 sonuc=login_twitter(username, password)
 x=search_on_google(sonuc)
