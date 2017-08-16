@@ -103,28 +103,34 @@ def chrome_extension_add():
     driver.get("http://www.google.com")
     time.sleep(6)
 
-def angelco(angle_link):
+def angelco():
 
-    driver.get(angle_link)
+    driver.get("https://angel.co/login")
+    username_field = driver.find_element_by_class_name("js-email")
+    pass_field = driver.find_element_by_id("user_password")
+
+    username_field.send_keys("kemalcanbora@gmail.com")
+    driver.implicitly_wait(1)
+    pass_field.send_keys("")
+    driver.implicitly_wait(1)
+
+    driver.find_element_by_class_name("c-button").click()
+
 
     time.sleep(6)
-
-    # username_listesi = driver.find_elements(By.XPATH, "//div[@class='content']")
-    #//div[@class='menuBar']//*[@class='menuItem']
-    username_listesi = driver.find_elements(By.XPATH, "//div[@class='show']//*[@class='content']")
-    print(username_listesi )
-    time.sleep(6)
-
-    username_listesi_lst = []
-
-    for el in username_listesi[1:]:
+    url = 'https://angel.co/enevo/'
+    driver.get(url)
+    username_listesi = driver.find_elements(By.XPATH, "//div[@class='content']")
+    username_listesi_lst=[]
+    for el in username_listesi:
         username_listesi_lst.append(el.text)
-        print(username_listesi_lst)
-
+    print(username_listesi_lst[1])
 
 username = "tuulrik"#input("user name : ")
 password = ""#getpass("password  : ")
 
-sonuc=login_twitter(username, password)
-x=search_on_google(sonuc)
-crunchbase(x)
+# sonuc=login_twitter(username, password)
+# x=search_on_google(sonuc)
+# crunchbase(x)
+
+angelco()
