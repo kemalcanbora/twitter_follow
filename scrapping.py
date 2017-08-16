@@ -8,20 +8,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 
-### for proxy ##
-# PROXY = "fr3.vpnme.me"
-# webdriver.DesiredCapabilities.CHROME['proxy']={
-#     "httpProxy":PROXY,
-#     "ftpProxy":PROXY,
-#     "sslProxy":PROXY,
-#     "noProxy":None,
-#     "proxyType":"MANUAL",
-#     "autodetect":False,
-#     "class": "org.openqa.selenium.Proxy",
-# }
-
 
 driver = webdriver.Chrome("/usr/bin/chromedriver")
+
 
 def login_twitter(username, password):
     driver.get("https://twitter.com/login")
@@ -56,18 +45,21 @@ def login_twitter(username, password):
 
     for el in username_listesi[1:]:
         username_listesi_lst.append(el.text)
+        print(len(username_listesi_lst))
 
     for el in isim_listesi:
         isim_listesi_lst.append(el.text)
+        print(len(isim_listesi_lst))
     dataframe=pd.DataFrame({"username":username_listesi_lst,"isim_listesi":isim_listesi_lst})
     # driver.close()
     return (dataframe["isim_listesi"][0])
 
 
 def search_on_google(param):
-    # chop = webdriver.ChromeOptions()
-    # chop.add_extension('/usr/local/bin/Proxy-for-Chrome_v1.14.crx')
-    # driver = webdriver.Chrome(chrome_options=chop)
+
+    chop = webdriver.ChromeOptions()
+    chop.add_extension('User-Agent-Switcher-for-Chrome_v1.0.43.crx')
+    driver = webdriver.Chrome(chrome_options=chop)
 
     driver.get("http://www.google.com")
     input_element = driver.find_element_by_name("q")
@@ -90,7 +82,6 @@ def search_on_google(param):
     driver.find_element_by_xpath('.//*[@id="rso"]/div[1]/div/div/div/div/h3/a').click()
     print(driver.current_url)
 
-
     return (driver.current_url)
 
 def crunchbase(crunch_link):
@@ -112,9 +103,28 @@ def chrome_extension_add():
     driver.get("http://www.google.com")
     time.sleep(6)
 
+def angelco(angle_link):
+
+    driver.get(angle_link)
+
+    time.sleep(6)
+
+    # username_listesi = driver.find_elements(By.XPATH, "//div[@class='content']")
+    #//div[@class='menuBar']//*[@class='menuItem']
+    username_listesi = driver.find_elements(By.XPATH, "//div[@class='show']//*[@class='content']")
+    print(username_listesi )
+    time.sleep(6)
+
+    username_listesi_lst = []
+
+    for el in username_listesi[1:]:
+        username_listesi_lst.append(el.text)
+        print(username_listesi_lst)
+
 
 username = "tuulrik"#input("user name : ")
-password = "xxx"#getpass("password  : ")
+password = ""#getpass("password  : ")
 
 sonuc=login_twitter(username, password)
 x=search_on_google(sonuc)
+crunchbase(x)
