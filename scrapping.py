@@ -1,6 +1,5 @@
 import pandas as pd
 import time
-import  os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -45,11 +44,11 @@ def login_twitter(username, password):
 
     for el in username_listesi[1:]:
         username_listesi_lst.append(el.text)
-        print(len(username_listesi_lst))
+        # print(len(username_listesi_lst))
 
     for el in isim_listesi:
         isim_listesi_lst.append(el.text)
-        print(len(isim_listesi_lst))
+        # print(len(isim_listesi_lst))
     dataframe=pd.DataFrame({"username":username_listesi_lst,"isim_listesi":isim_listesi_lst})
     # driver.close()
     return (dataframe["isim_listesi"][0])
@@ -103,7 +102,7 @@ def chrome_extension_add():
     driver.get("http://www.google.com")
     time.sleep(6)
 
-def angelco():
+def angelco(x):
 
     driver.get("https://angel.co/login")
     username_field = driver.find_element_by_class_name("js-email")
@@ -118,19 +117,92 @@ def angelco():
 
 
     time.sleep(6)
-    url = 'https://angel.co/enevo/'
+    url = 'https://angel.co/'+str(x)+'/'
     driver.get(url)
-    username_listesi = driver.find_elements(By.XPATH, "//div[@class='content']")
-    username_listesi_lst=[]
-    for el in username_listesi:
-        username_listesi_lst.append(el.text)
-    print(username_listesi_lst[1])
 
+    driver.find_element_by_class_name("hidden_more").click()
+    content = driver.find_elements(By.XPATH, "//div[@class='content']")
+    hidden_content= driver.find_elements(By.XPATH, "//div[@class='content']/span")
+    full_tex = content + hidden_content
+
+
+    time.sleep(5)
+    founders = driver.find_elements(By.XPATH, "//div[@class='founders section']//div[@class='name']")
+    teams=     driver.find_elements(By.XPATH, "//div[@class='section team']//div[@class='name']")
+    financing=     driver.find_elements(By.XPATH, "//div[@class='past_financing section']//div[@class='name']")
+
+
+    tags= driver.find_elements(By.XPATH, "//span[@class='js-market_tags']//a[@class='tag']")
+    location= driver.find_elements(By.XPATH, "//span[@class='js-location_tags']")
+    company_size= driver.find_elements(By.XPATH, "//span[@class='js-company_size']")
+
+    ##########
+    tags_links = driver.find_element_by_class_name('js-market_tags')
+    tag_a=tags_links.find_element_by_css_selector('a').get_attribute('href')
+
+    tags_links_lst = []
+    for el in tag_a:
+        print(el)
+
+    ##########
+
+    company_size_lst = []
+    for el in company_size:
+        company_size_lst.append(el.text)
+        company_size_Df= pd.DataFrame({"company_size_lst ": company_size_lst})
+
+    location_lst = []
+    for el in location:
+        location_lst.append(el.text)
+        location_Df= pd.DataFrame({"location_lst  ": location_lst })
+
+    tags_lst = []
+    for el in tags:
+        tags_lst.append(el.text)
+        tagsDf = pd.DataFrame({"tags_lst ": tags_lst })
+
+    founders_lst=[]
+    for el in founders :
+        founders_lst.append(el.text)
+        foundersDf=pd.DataFrame({"founders_lst":founders_lst})
+
+    team_lst = []
+    for el in teams:
+        team_lst.append(el.text)
+        teamDf = pd.DataFrame({"team_lst ": team_lst })
+
+    financing_lst = []
+    for el in financing:
+        financing_lst.append(el.text)
+        financingDf = pd.DataFrame({"financing_lst ": financing_lst })
+
+
+    frames=[teamDf,foundersDf,financingDf]
+    fullset_datadf=pd.concat(frames)
+    print(fullset_datadf)
+
+    print(tags_lst)
+    print(company_size_lst)
+    print(location_lst)
+
+    time.sleep(6)
+
+    for i,item in enumerate(tags_lst):
+        print(tags_lst[i])
+        url = 'https://angel.co/' + str(tags_lst[i]) + '/'
+        driver.get(url)
+        rev=     driver.find_elements(By.XPATH, "//div[@class='results_holder']//div[@class='name']")
+        rev_lst = []
+        for el in rev:
+            rev_lst.append(el.text)
+            rev_lstDf = pd.DataFrame({"rev_lst ": rev_lst })
+        print(rev_lst)
+
+
+#########################dasda################3
 username = "tuulrik"#input("user name : ")
 password = ""#getpass("password  : ")
 
 # sonuc=login_twitter(username, password)
 # x=search_on_google(sonuc)
-# crunchbase(x)
-
-angelco()
+angelco("evreka")
